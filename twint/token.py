@@ -9,11 +9,11 @@ class TokenExpiryException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
 
-        
+
 class RefreshTokenException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
-        
+
 
 class Token:
     def __init__(self, config):
@@ -66,4 +66,5 @@ class Token:
             self.config.Guest_token = str(match.group(1))
         else:
             self.config.Guest_token = None
-            raise RefreshTokenException('Could not find the Guest token in HTML')
+            time.sleep(15 * 60)
+            raise RefreshTokenException('Could not find the Guest token in HTML, slept for 15m')
