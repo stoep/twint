@@ -26,8 +26,12 @@ def User(ur):
     _usr.id = ur['data']['user']['rest_id']
 
     # parsing date to user-friendly format
-    _dt = ur['data']['user']['legacy']['created_at']
-    _dt = datetime.datetime.strptime(_dt, '%a %b %d %H:%M:%S %z %Y')
+    try:
+        _dt = ur['data']['user']['legacy']['created_at']
+        _dt = datetime.datetime.strptime(_dt, '%a %b %d %H:%M:%S %z %Y')
+    except:
+        _dt = datetime.datetime.strptime("1970", "%Y")
+
     # date is of the format year,
     _usr.join_date = _dt.strftime(User_formats['join_date'])
     _usr.join_time = _dt.strftime(User_formats['join_time'])
@@ -39,9 +43,19 @@ def User(ur):
     _usr.likes = int(ur['data']['user']['legacy']['favourites_count'])
     _usr.media_count = int(ur['data']['user']['legacy']['media_count'])
 
-    _usr.is_private = ur['data']['user']['legacy']['protected']
-    _usr.is_verified = ur['data']['user']['legacy']['verified']
-    _usr.avatar = ur['data']['user']['legacy']['profile_image_url_https']
+    try:
+        _usr.is_private = ur['data']['user']['legacy']['protected']
+    except:
+        _usr.is_private = ''
+    try:
+        _usr.is_verified = ur['data']['user']['legacy']['verified']
+    except:
+        _usr.is_verified = ''
+
+    try:
+        _usr.avatar = ur['data']['user']['legacy']['profile_image_url_https']
+    except:
+        _usr.avatar = ''
 
     try:
         _usr.name = ur['data']['user']['legacy']['name']
