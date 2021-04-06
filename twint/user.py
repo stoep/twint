@@ -24,7 +24,7 @@ def User(ur):
         raise KeyError(msg)
     _usr = user()
     _usr.id = ur['data']['user']['rest_id']
-    _usr.name = ur['data']['user']['legacy']['name']
+    _usr.name = ur['data']['user']['legacy']['name'] if 'name' in ur['data']['user']['legacy'] else ''
     _usr.username = ur['data']['user']['legacy']['screen_name']
     _usr.bio = ur['data']['user']['legacy']['description']
     _usr.location = ur['data']['user']['legacy']['location']
@@ -47,7 +47,9 @@ def User(ur):
     _usr.is_private = ur['data']['user']['legacy']['protected']
     _usr.is_verified = ur['data']['user']['legacy']['verified']
     _usr.avatar = ur['data']['user']['legacy']['profile_image_url_https']
-    _usr.background_image = ur['data']['user']['legacy']['profile_banner_url']
+    # _usr.background_image = ur['data']['user']['legacy']['profile_banner_url']
+    _usr.background_image = ur['data']['user']['legacy']['profile_banner_url'] if 'profile_banner_url' in ur['data']['user']['legacy'] else ''
+
     # TODO : future implementation
     # legacy_extended_profile is also available in some cases which can be used to get DOB of user
     return _usr
