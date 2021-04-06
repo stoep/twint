@@ -4,6 +4,8 @@ import time
 import requests
 import logging as logme
 
+from torpy import TorClient
+from torpy.http.adapter import TorHttpAdapter
 
 class TokenExpiryException(Exception):
     def __init__(self, msg):
@@ -59,12 +61,27 @@ class Token:
 
     def refresh(self):
         logme.debug('Retrieving guest token')
-        res = self._request()
+        print('refreshtoken')
+        # res = self._request()
+        res = self._request_through_tor()
         match = re.search(r'\("gt=(\d+);', res.text)
         if match:
             logme.debug('Found guest token in HTML')
             self.config.Guest_token = str(match.group(1))
         else:
             self.config.Guest_token = None
-            time.sleep(15 * 60)
-            raise RefreshTokenException('Could not find the Guest token in HTML, slept for 15m')
+            raise RefreshTokenException('Could not find the Guest token in HTML')
+
+    def _request_through_tor(self):
+        with TorClient() as tor:
+            with tor.get_guard() as guard:
+                adapter = TorHttpAdapter(guard, 1, retries=30)
+
+                with requests.Session() as session:
+                    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0'}
+                    response = session.get(self.url, headers=headers, allow_redirects=False, timeout=30)
+
+                    session.mount('http://', adapter)
+                    session.mount('https://', adapter)
+
+                    return response

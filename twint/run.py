@@ -226,7 +226,7 @@ class Twint:
                 await output.Tweets(tweet, self.config, self.conn)
 
     async def main(self, callback=None):
-
+        self.token.refresh()
         task = ensure_future(self.run())  # Might be changed to create_task in 3.7+.
 
         if callback:
