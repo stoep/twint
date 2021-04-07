@@ -61,7 +61,7 @@ class Token:
 
     def refresh(self):
         logme.debug('Retrieving guest token')
-        raise(RefreshTokenException('test'))
+
         res = self._request()
         match = re.search(r'\("gt=(\d+);', res.text)
         if match:
