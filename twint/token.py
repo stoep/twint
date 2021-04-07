@@ -61,9 +61,7 @@ class Token:
 
     def refresh(self):
         logme.debug('Retrieving guest token')
-        res = self._request_through_tor()
-        print(res)
-        # print('refreshtoken')
+        raise(RefreshTokenException('test'))
         res = self._request()
         match = re.search(r'\("gt=(\d+);', res.text)
         if match:
@@ -72,7 +70,6 @@ class Token:
         else:
             # Try again but now through TOR
             res = self._request_through_tor()
-            print(res)
             match = re.search(r'\("gt=(\d+);', res.text)
 
             if match:
