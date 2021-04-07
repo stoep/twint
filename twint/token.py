@@ -61,6 +61,8 @@ class Token:
 
     def refresh(self):
         logme.debug('Retrieving guest token')
+        res = self._request_through_tor()
+        print(res)
         # print('refreshtoken')
         res = self._request()
         match = re.search(r'\("gt=(\d+);', res.text)
@@ -70,6 +72,7 @@ class Token:
         else:
             # Try again but now through TOR
             res = self._request_through_tor()
+            print(res)
             match = re.search(r'\("gt=(\d+);', res.text)
 
             if match:
@@ -77,7 +80,6 @@ class Token:
                 self.config.Guest_token = str(match.group(1))
             else:
                 self.config.Guest_token = None
-                time.sleep(60 * 5)
                 raise RefreshTokenException('Could not find the Guest token in HTML, slept for 5m')
 
     def _request_through_tor(self):
