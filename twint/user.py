@@ -37,11 +37,30 @@ def User(ur):
     _usr.join_time = _dt.strftime(User_formats['join_time'])
 
     # :type `int`
-    _usr.tweets = int(ur['data']['user']['legacy']['statuses_count'])
-    _usr.following = int(ur['data']['user']['legacy']['friends_count'])
-    _usr.followers = int(ur['data']['user']['legacy']['followers_count'])
-    _usr.likes = int(ur['data']['user']['legacy']['favourites_count'])
-    _usr.media_count = int(ur['data']['user']['legacy']['media_count'])
+    try:
+        _usr.tweets = int(ur['data']['user']['legacy']['statuses_count'])
+    except:
+        _usr.tweets = 0
+
+    try:
+        _usr.following = int(ur['data']['user']['legacy']['friends_count'])
+    except:
+        _usr.following = 0
+
+    try:
+        _usr.followers = int(ur['data']['user']['legacy']['followers_count'])
+    except:
+        _usr.followers = 0
+
+    try:
+        _usr.likes = int(ur['data']['user']['legacy']['favourites_count'])
+    except:
+        _usr.likes = 0
+
+    try:
+        _usr.media_count = int(ur['data']['user']['legacy']['media_count'])
+    except:
+        _usr.media_count = 0
 
     try:
         _usr.is_private = ur['data']['user']['legacy']['protected']
