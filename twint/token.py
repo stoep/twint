@@ -69,33 +69,17 @@ class Token:
             logme.debug('Found guest token in HTML')
             self.config.Guest_token = str(match.group(1))
         else:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0',
-                'authority': 'api.twitter.com',
-                'content-length': '0',
-                'authorization': self.config.Bearer_token,
-                'x-twitter-client-language': 'en',
-                'x-csrf-token': res.cookies.get("ct0"),
-                'x-twitter-active-user': 'yes',
-                'content-type': 'application/x-www-form-urlencoded',
-                'accept': '*/*',
-                'sec-gpc': '1',
-                'origin': 'https://twitter.com',
-                'sec-fetch-site': 'same-site',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-dest': 'empty',
-                'referer': 'https://twitter.com/',
-                'accept-language': 'en-US',
-            }
-
-            self._session.headers.update(headers)
-            req = self._session.prepare_request(requests.Request('POST', 'https://api.twitter.com/1.1/guest/activate.json'))
-            res = self._session.send(req, allow_redirects=True, timeout=self._timeout)
-            match = re.search(r'{"guest_token":"(\d )"}', res.text)
+            try:
+                response = requests.post('https://api.twitter.com/1.1/guest/activate.json', headers = {
+                    'authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA',
+                })
+                match = response.json()['guest_token']
+                self.config.Guest_token = match
+            except KeyError:
+                pass
 
             if match:
-                logme.debug('Found guest token in JSON')
-                self.config.Guest_token = str(match.group(1))
+                print('Found guest token in JSON')
             else:
                 # Try original again but now through TOR
                 res = self._request_through_tor()
